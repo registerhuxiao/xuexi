@@ -33,6 +33,7 @@ class wechatCallbackapiTest
             $fromUsername = $postObj->FromUserName;
             $toUsername = $postObj->ToUserName;
             $keyword = trim($postObj->Content);
+            $MsgType=$postObj->MsgType;
             $time = time();
             $textTpl = "<xml>
 							<ToUserName><![CDATA[%s]]></ToUserName>
@@ -42,28 +43,46 @@ class wechatCallbackapiTest
 							<Content><![CDATA[%s]]></Content>
 							<FuncFlag>0</FuncFlag>
 							</xml>";
-            if(!empty( $keyword ))
+
+
+/***************************************************关键词回复******************************************************************/
+            if($MsgType=="text")
             {
-                $msgType = "text";
-                switch($keyword)
+                if(!empty( $keyword ))
                 {
-                    case "1":
-                        $contentStr="1";
-                        break;
-                    case "2":
-                        $contentStr="2";
-                        break;
-                    case "3":
-                        $contentStr="3";
-                        break;
-                    default:
-                        $contentStr="bybe";
+                    $SentMsgType = "text";
+
+                    switch($keyword)
+                    {
+                        case "1":
+                            $contentStr="1";
+                            break;
+                        case "2":
+                            $contentStr="2";
+                            break;
+                        case "3":
+                            $contentStr="3";
+                            break;
+                        default:
+                            $contentStr="bybe";
+                    }
+
+                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $SentMsgType, $contentStr);
+                    echo $resultStr;
+                }else{
+                    $contentStr="Input something...";
+                    $SentMsgType = "text";
+                    $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $SentMsgType, $contentStr);
+                    echo $resultStr;
                 }
 
-                $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
+            }elseif($MsgType=="image")
+/*******************************************************图片回复*********************************************************************/
+            {
+                $contentStr="你的图片真棒";
+                $SentMsgType = "text";
+                $resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $SentMsgType, $contentStr);
                 echo $resultStr;
-            }else{
-                echo "Input something...";
             }
 
         }else {
